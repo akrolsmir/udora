@@ -17,9 +17,12 @@ def video(request):
     global U, vid
 
     if request.method == 'POST':
-        print "Making Udora"
         url = request.POST.get('url', 'invalid')
         if url != 'invalid':
+            # print "Making Udora"
+            # print url
+            url = getYoutubeID(url)
+            # print url + vid
             U = Udora(url)
             U.updateDict()
             U.getHighestURL()
@@ -27,10 +30,10 @@ def video(request):
             return render_to_response('pantube/index.html', {'firstVideo': vid})
 
         type = request.POST.get('type')
-        print request.POST
+        # print request.POST
         if type == 'get_next_video':
             video_id = U.getHighestURL()
-            print 'video_id' + video_id
+            # print 'video_id' + video_id
             return_dict = {'video_id': video_id}
             json = simplejson.dumps(return_dict)
             return HttpResponse(json, mimetype="application/json")
@@ -50,3 +53,11 @@ def video(request):
     #     return HttpResponse(request.read())
     # return HttpResponse('hi!')
     return render_to_response('pantube/index.html', {'firstVideo': vid})
+
+def getYoutubeID(url):
+    import urlparse
+    url_data = urlparse.urlparse(url)
+    query = urlparse.parse_qs(url_data.query)
+    # print query
+    video = query["v"][0]
+    return video
