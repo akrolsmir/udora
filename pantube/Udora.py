@@ -46,7 +46,7 @@ class Udora(object):
             elif url not in self.nextInQueue:
                 self.nextInQueue[url]=0
             else:
-                self.nextInQueue[url]=self.nextInQueue[url]-1
+                self.nextInQueue[url]=self.nextInQueue[url]-20
                 
     def changeRanking(self,isUp,url):
         feed=yt_service.GetYouTubeRelatedVideoFeed(video_id=url)
