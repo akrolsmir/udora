@@ -1,7 +1,36 @@
+<!DOCTYPE html>
 <html>
-<form name="input" action="video" method="POST">
-{% csrf_token %}
-Youtube URL: <input type="text" name="url">
-<input type="submit" value="Submit">
-</form>
+  <head>
+	<style>
+	html { 
+	background: url('{{ STATIC_URL }}searchbackground.png') no-repeat center center fixed; 
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+	}
+	</style>
+    <title>
+		Udora
+	</title>
+	
+  </head>
+  
+  <body>
+	<div id="container" style="width:940px;height:150px;"></div>
+			<div align="center">
+				<h2>
+					<img src="{{ STATIC_URL }}Udora.png" width="244" height ="110"/>
+				</h2>
+			</div>
+		</div>
+			<div align="center">
+				<form name="input" action="video" method="POST">
+				{% csrf_token %}
+				<input type="text" name="url" size="40">
+				<input type="submit" value="Submit">
+				</form>
+			</div>
+		</div>
+  </body>
 </html>

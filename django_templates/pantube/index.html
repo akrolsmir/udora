@@ -1,8 +1,32 @@
 <!DOCTYPE html>
 <html>
+  <head>
+  <style>
+    html { 
+      background: url('{{ STATIC_URL }} /static/searchbackground.png') no-repeat center center fixed; 
+      -webkit-background-size: cover;
+      -moz-background-size: cover;
+      -o-background-size: cover;
+      background-size: cover;
+    }
+    h1{text-align:center;}
+    b {font-size:60px;vertical-align:top;font-family:"Verdana", Verdana, sans-serif;}
+
+  </style>
+    <title>
+    Udora
+  </title>
+  </head>
+
   <body>
+
+    <h1>
+      <a href="..">
+        <input type="image" src="{{ STATIC_URL }} /static/Udora.png">
+      </a>
+    </h1>
     <!-- 1. The <iframe> (and video player) will replace this <div> tag. -->
-    <div id="player"></div>
+    <div id="player" style="margin:0 auto; display:block;"></div>
 
     <script type="text/javascript" src = "{{ STATIC_URL }} /static/jquery-1.8.2.min.js"> </script>
 
@@ -132,7 +156,17 @@
       }
     </script>
 
-    <input type="image" src ="up.png" name="like" onclick="thumbsUp()"/>
-    <input type="image" src ="down.png" name="dislike" onclick="thumbsDown()"/>
+    <!--<div align="center">
+      <iframe align="middle" width="640" height="480" src="http://www.youtube.com/embed/9bZkp7q19f0" frameborder="0" allowfullscreen></iframe>
+    </div> -->
+    
+    <br/>
+    <div align="center" id="content">
+      <input type="image" name="down" src="{{ STATIC_URL }} /static/thumbsup3.png" width="80" height ="80"name="like" onclick="thumbsUp()">
+        <b>Rate It!</b>
+      <input type="image" name="up" src="{{ STATIC_URL }} /static/thumbsdown2.png" width="80" height ="80"name="dislike" onclick="thumbsDown()">
+    </div>
+
   </body>
 </html>
+
