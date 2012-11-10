@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <!-- 1. The <iframe> (and video player) will replace this <div> tag. -->
+    <div id="player"></div>
+
+    <script type="text/javascript" src = "{{ STATIC_URL }} /static/jquery-1.8.2.min.js"> </script>
+
+    <script>
+    $.ajaxSetup({ 
+         beforeSend: function(xhr, settings) {
+             function getCookie(name) {
+                 var cookieValue = null;
+                 if (document.cookie && document.cookie != '') {
+                     var cookies = document.cookie.split(';');
+                     for (var i = 0; i < cookies.length; i++) {
+                         var cookie = jQuery.trim(cookies[i]);
+                         // Does this cookie string begin with the name we want?
+                     if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                         cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                         break;
+                     }
+                 }
+             }
+             return cookieValue;
+             }
+             if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+                 // Only send the token to relative URLs i.e. locally.
+                 xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+             }
+         } 
+    });
+    </script>
+
+    <script>
+      // 2. This code loads the IFrame Player API code asynchronously.
+      var tag = document.createElement('script');
+      tag.src = "//www.youtube.com/iframe_api";
+      var firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+      // 3. This function creates an <iframe> (and YouTube player)
+      //    after the API code downloads.
+      var player;
+      function onYouTubeIframeAPIReady() {
+        player = new YT.Player('player', {
+          height: '385',
+          width: '640',
+          videoId: "{{firstVideo}}",
+          playerVars: {'autoplay': 1, 'controls': 1},
+          events: {
+            'onReady': onPlayerReady,
+            'onStateChange': onPlayerStateChange
+          }
+        });
+      }
+
+      // The API will call this function when the video player is ready.
+      function onPlayerReady(event) {
+        event.target.playVideo();
+      }
+
+      // The API calls this function when the player's state changes.
+      function onPlayerStateChange(event) {
+        if(event.data == 0){
+          $.ajax({
+            url: "/hello/",
+            type: "post",
+            data: {type: 'get_next_video'},
+            success: function(response, textStatus, jqXHR){
+              player.loadVideoById(response.video_id, 1, "large");
+            },
+            error: function(jqXHR, textStatus, errorThrown){
+              // log the error to the console
+              console.log(
+                  "The following error occured: "+
+                  textStatus, errorThrown
+              );
+
+              player.loadVideoById("9bZkp7q19f0", 1, "large");
+            },
+            complete: function(){
+              player.playVideo();
+            }
+          });
+        }
+      }
+
+      function thumbsUp(){
+        url = player.getVideoUrl();
+        index = url.indexOf('&v=') + 3;
+        videoCode = url.slice(index);
+
+        $.ajax({
+          url: "/hello/",
+          type: "post",
+          data: {type: "thumbs_up", video: videoCode},
+          success: function(response, textStatus, jqXHR){
+            console.log("Thumbs up success!");
+          },
+          error: function(jqXHR, textStatus, errorThrown){
+            console.log("Thumbs up failure!");
+          },
+          complete: function(){
+            console.log("Video: " + videoCode);
+          }
+        });
+      }
+
+      function thumbsDown(){
+        url = player.getVideoUrl();
+        index = url.indexOf('&v=') + 3;
+        videoCode = url.slice(index);
+
+        $.ajax({
+          url: "/hello/",
+          type: "post",
+          data: {type: "thumbs_down", video: videoCode},
+          success: function(response, textStatus, jqXHR){
+
+            player.loadVideoById(response.video_id, 1, "large");
+            player.playVideo();
+            console.log("Thumbs down success!");
+          },
+          error: function(jqXHR, textStatus, errorThrown){
+            console.log("Thumbs down failure!");
+          },
+          complete: function(){
+            console.log("Video: " + videoCode);
+          }
+        });
+      }
+    </script>
+
+    <input type="image" src ="up.png" name="like" onclick="thumbsUp()"/>
+    <input type="image" src ="down.png" name="dislike" onclick="thumbsDown()"/>
+  </body>
+</html>
